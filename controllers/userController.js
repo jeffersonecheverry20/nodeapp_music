@@ -4,6 +4,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
 const {codeResponse, messageResponse} = require('../constantes/constants');
+const user = require('../models/user');
 
 exports.saveUser = (req, res) => {
     console.log('Llego al metodo saveUsuario');
@@ -73,7 +74,7 @@ exports.loginUser = (req, res) => {
                 });
             } else {
                 if(!user){
-                    res.status(400).send({
+                    res.status(404).send({
                         code: codeResponse.not_successfull,
                         message: messageResponse.not_successfull,
                         body: 'El usuario no existe'
@@ -107,5 +108,37 @@ exports.loginUser = (req, res) => {
             body: 'El email y/o la password se encuentran vacios'
         });
     }
+
+}
+
+exports.updateUser = (req, res) => {
+    const userId = req.params.id;
+    const user = req.body;
+
+    User.findByIdAndUpdate(userId, user, (err, userUpdate) => {
+        if(err){
+            res.status(500).send({
+                code: codeResponse.not_successfull,
+                message: messageResponse.not_successfull,
+                body: 'Error actualizando el usuario'
+            });
+        } else {
+            if(user){
+                res.status(200).send({
+                    code: codeResponse.successfull,
+                    message: messageResponse.successfull,
+                    body: {
+                        user: userUpdate
+                    }   
+                });
+            } else {
+                res.status(404).send({
+                    code: codeResponse.not_successfull,
+                    message: messageResponse.not_successfull,
+                    body: 'El usuario no se ha logrado actualizar'
+                });
+            }
+        }
+    })
 
 }
