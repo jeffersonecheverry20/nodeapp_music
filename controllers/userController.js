@@ -80,8 +80,11 @@ exports.loginUser = (req, res) => {
                         body: 'El usuario no existe'
                     });
                 } else {
+                    console.log("Password request ", req.body.password);
+                    console.log("Password BD ", user.password);
                     bcrypt.compare(req.body.password, user.password, (err, check) => {
                         if(err){
+                            console.log(err);
                             res.status(500).send({
                                 code: codeResponse.not_successfull,
                                 message: messageResponse.not_successfull,
