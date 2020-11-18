@@ -4,7 +4,9 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
 const {codeResponse, messageResponse} = require('../constantes/constants');
-const user = require('../models/user');
+var fs = require('fs');
+var path = require('path');
+const { exists } = require('../models/user');
 
 exports.saveUser = (req, res) => {
     console.log('Llego al metodo saveUsuario');
@@ -145,3 +147,78 @@ exports.updateUser = (req, res) => {
     })
 
 }
+
+exports.uploadImage = (req, res) => {
+    const userId = req.params.id;
+
+    if(req.files){
+        var file_path = req.files.image.path;
+        var file_split = file_path.split('\\');
+        var file_name = file_split[2];
+
+        var ext_split = file_name.split('.');
+        var ext = ext_split[1];
+
+        console.log(file_split);
+        console.log(ext_split);
+
+        if(ext === 'png' || ext === 'jpg'){
+            User.findByIdAndUpdate(userId, {image: file_name}, (err, userUpdate) => {
+                if(err){
+                    console.log(err);
+                    res.status(500).send({
+                        code: codeResponse.not_successfull,
+                        message: messageResponse.not_successfull,
+                        body: 'Error al actualizar la imagen'
+                    });
+                } else {
+                    userUpdate.image = file_name;
+                    res.status(200).send({
+                        code: codeResponse.successfull,
+                        message: messageResponse.successfull,
+                        body: {
+                            user: userUpdate
+                        }
+                    });
+                }
+            });
+        } else {
+            res.status(404).send({
+                code: codeResponse.not_successfull,
+                message: messageResponse.not_successfull,
+                body: 'La extensión de la imagen no es correcta, solo puede ser png y jpg'
+            });
+        }
+    } else {
+        res.status(404).send({
+            code: codeResponse.not_successfull,
+            message: messageResponse.not_successfull,
+            body: 'La imagen no se ha subido'
+        });
+    }
+
+};
+
+
+exports.getImageFile = (req, res) => {
+
+    const imageFile = req.params.imageFile;
+    console.log(imageFile);
+    const path_file = './uploads/users/'+imageFile;
+
+    fs.stat(path_file, (err, stats) => {
+        console.log(exists);
+        if(err){
+            console.log(err);
+            res.status(404).send({
+                code: codeResponse.not_successfull,
+                message: messageResponse.not_successfull,
+                body: 'La imagen no existe o se presento un error al acceder a la ruta de la imagen'
+            });
+        } else {
+            console.log(stats);
+            res.sendFile(path.resolve(path_file));
+        }
+    });
+
+};
