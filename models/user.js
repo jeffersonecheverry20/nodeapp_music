@@ -9,7 +9,8 @@ var UserSchema = new Schema({
     email: {type: String},
     password: {type: String},
     role: {type: String},
-    image: {type: String}
+    image: {type: String},
+    genre: [{type: String}]
 });
 
 module.exports = mongoose.model('User', UserSchema);

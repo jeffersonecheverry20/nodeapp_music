@@ -6,7 +6,7 @@ const jwt = require('../services/jwt');
 const {codeResponse, messageResponse} = require('../constantes/constants');
 var fs = require('fs');
 var path = require('path');
-const { exists } = require('../models/user');
+// const { exists } = require('../models/user');
 
 exports.saveUser = (req, res) => {
     console.log('Llego al metodo saveUsuario');
@@ -30,6 +30,14 @@ exports.saveUser = (req, res) => {
                     image: null,
                     password: hash
                 });
+
+                if(req.body.genre != null && req.body.genre.length > 0){
+                    console.log(req.body.genre);
+                    req.body.genre.forEach(element => {
+                        console.log("El elemento es ", element);
+                        user.genre.push(element.genre);
+                    });
+                }
 
                 user.save((err, userStored) => {
                     if(err){
@@ -207,7 +215,6 @@ exports.getImageFile = (req, res) => {
     const path_file = './uploads/users/'+imageFile;
 
     fs.stat(path_file, (err, stats) => {
-        console.log(exists);
         if(err){
             console.log(err);
             res.status(404).send({
