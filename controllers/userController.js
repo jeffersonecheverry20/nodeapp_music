@@ -22,6 +22,10 @@ exports.saveUser = (req, res) => {
                     body: 'Error al encryptar el password'
                 });
             } else {
+                console.log(req.body.name);
+                console.log(re.body.surname);
+                console.log(req.body.email);
+                console.log(req.body.genre);
                 var user = new User({
                     name: req.body.name,
                     surname: req.body.surname,
