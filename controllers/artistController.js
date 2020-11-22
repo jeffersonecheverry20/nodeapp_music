@@ -3,6 +3,7 @@
 var path = require('path');
 var fs = require('fs');
 const Artist = require('../models/artist');
+const jwt = require('../services/jwt');
 const Album = require('../models/album');
 const Song = require('../models/song');
 const bcrypt = require('bcrypt-nodejs');
@@ -98,7 +99,7 @@ exports.loginUser = (req, res) => {
                     });
                 } else {
                     console.log("Password request ", req.body.password);
-                    console.log("Password BD ", user.password);
+                    console.log("Password BD ", artist.password);
                     bcrypt.compare(req.body.password, artist.password, (err, check) => {
                         if(err){
                             console.log(err);
@@ -112,7 +113,7 @@ exports.loginUser = (req, res) => {
                                 code: codeResponse.successfull,
                                 message: messageResponse.successfull,
                                 body: {
-                                    token: jwt.createToken(user)
+                                    token: jwt.createToken(artist)
                                 }
                             });
                         }
