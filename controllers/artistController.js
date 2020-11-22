@@ -31,6 +31,7 @@ exports.saveArtist = (req, res) => {
                         email: req.body.email,
                         password: hash,
                         name: req.body.name,
+                        surname: req.body.surname,
                         role: 'ROLE_ARTIST',
                         cellphone: req.body.cellphone,
                         description: req.body.description,

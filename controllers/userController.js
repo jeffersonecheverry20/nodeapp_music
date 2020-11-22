@@ -35,7 +35,7 @@ exports.saveUser = (req, res) => {
                     console.log(req.body.genre);
                     req.body.genre.forEach(element => {
                         console.log("El elemento es ", element);
-                        user.genre.push(element.genre);
+                        user.genre.push(element);
                     });
                 }
 
