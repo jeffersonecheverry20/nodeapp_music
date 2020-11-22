@@ -122,7 +122,7 @@ exports.loginUser = (req, res) => {
         });
     }
 
-}
+};
 
 exports.updateUser = (req, res) => {
     const userId = req.params.id;

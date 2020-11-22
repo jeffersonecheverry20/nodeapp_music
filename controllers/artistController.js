@@ -77,3 +77,57 @@ exports.saveArtist = (req, res) => {
     }
 };
 
+exports.loginUser = (req, res) => {
+
+    if(req.body.email !== null && req.body.password !== null) {
+
+        Artist.findOne({email: req.body.email.toLowerCase()}, (err, artist) => {
+            if(err){
+                console.log(err);
+                res.status(500).send({
+                    code: codeResponse.not_successfull,
+                    message: messageResponse.not_successfull,
+                    body: 'Error al buscar el usuario en la base de datos'
+                });
+            } else {
+                if(!artist){
+                    res.status(404).send({
+                        code: codeResponse.not_successfull,
+                        message: messageResponse.not_successfull,
+                        body: 'El usuario no existe'
+                    });
+                } else {
+                    console.log("Password request ", req.body.password);
+                    console.log("Password BD ", user.password);
+                    bcrypt.compare(req.body.password, artist.password, (err, check) => {
+                        if(err){
+                            console.log(err);
+                            res.status(500).send({
+                                code: codeResponse.not_successfull,
+                                message: messageResponse.not_successfull,
+                                body: 'Error al decodificar el password, usuario no logeado'
+                            });
+                        } else {
+                            res.status(200).send({
+                                code: codeResponse.successfull,
+                                message: messageResponse.successfull,
+                                body: {
+                                    token: jwt.createToken(user)
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+
+    } else {
+        res.status(200).send({
+            code: codeResponse.not_successfull,
+            message: messageResponse.not_successfull,
+            body: 'El email y/o la password se encuentran vacios'
+        });
+    }
+
+};
+
