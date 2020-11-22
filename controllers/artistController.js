@@ -42,7 +42,7 @@ exports.saveArtist = (req, res) => {
                         console.log(req.body.socialNetworks);
                         req.body.socialNetworks.forEach(element => {
                             console.log(element);
-                            artist.socialNetworks.push(element.socialNetworks);
+                            artist.socialNetworks.push(element);
                         });
                     }
 
