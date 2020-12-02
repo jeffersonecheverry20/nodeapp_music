@@ -3,18 +3,51 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('../services/jwt');
-const {codeResponse, messageResponse} = require('../constantes/constants');
+const { codeResponse, messageResponse } = require('../constantes/constants');
 var fs = require('fs');
 var path = require('path');
 // const { exists } = require('../models/user');
 
+exports.getUser = (req, res) => {
+
+    const userId = req.params.id;
+
+    User.findById(userId, (err, user) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send({
+                code: codeResponse.not_successfull,
+                message: messageResponse.not_successfull,
+                body: 'Error al buscar el usuario'
+            });
+        } else {
+            if (!user) {
+                res.status(404).send({
+                    code: codeResponse.not_successfull,
+                    message: messageResponse.not_successfull,
+                    body: 'Usuario no encontrado'
+                });
+            } else {
+                console.log(user);
+                res.status(200).send({
+                    code: codeResponse.successfull,
+                    message: messageResponse.successfull,
+                    body: {
+                        user: user
+                    }
+                });
+            }
+        }
+    });
+};
+
 exports.saveUser = (req, res) => {
     console.log('Llego al metodo saveUsuario');
-    if(req.body.name !== null && req.body.surname !== null && req.body.email !== null 
-        && req.body.password !== null){
-        
+    if (req.body.name !== null && req.body.surname !== null && req.body.email !== null
+        && req.body.password !== null) {
+
         bcrypt.hash(req.body.password, null, null, (err, hash) => {
-            if(err){
+            if (err) {
                 console.log(err);
                 res.status(500).send({
                     code: codeResponse.not_successfull,
@@ -31,7 +64,7 @@ exports.saveUser = (req, res) => {
                     password: hash
                 });
 
-                if(req.body.genre != null && req.body.genre.length > 0){
+                if (req.body.genre != null && req.body.genre.length > 0) {
                     console.log(req.body.genre);
                     req.body.genre.forEach(element => {
                         console.log("El elemento es ", element);
@@ -40,7 +73,7 @@ exports.saveUser = (req, res) => {
                 }
 
                 user.save((err, userStored) => {
-                    if(err){
+                    if (err) {
                         console.log(err);
                         res.status(500).send({
                             code: codeResponse.not_successfull,
@@ -72,10 +105,10 @@ exports.saveUser = (req, res) => {
 
 exports.loginUser = (req, res) => {
 
-    if(req.body.email !== null && req.body.password !== null) {
+    if (req.body.email !== null && req.body.password !== null) {
 
-        User.findOne({email: req.body.email.toLowerCase()}, (err, user) => {
-            if(err){
+        User.findOne({ email: req.body.email.toLowerCase() }, (err, user) => {
+            if (err) {
                 console.log(err);
                 res.status(500).send({
                     code: codeResponse.not_successfull,
@@ -83,7 +116,7 @@ exports.loginUser = (req, res) => {
                     body: 'Error al buscar el usuario en la base de datos'
                 });
             } else {
-                if(!user){
+                if (!user) {
                     res.status(404).send({
                         code: codeResponse.not_successfull,
                         message: messageResponse.not_successfull,
@@ -93,7 +126,7 @@ exports.loginUser = (req, res) => {
                     console.log("Password request ", req.body.password);
                     console.log("Password BD ", user.password);
                     bcrypt.compare(req.body.password, user.password, (err, check) => {
-                        if(err){
+                        if (err) {
                             console.log(err);
                             res.status(500).send({
                                 code: codeResponse.not_successfull,
@@ -105,7 +138,8 @@ exports.loginUser = (req, res) => {
                                 code: codeResponse.successfull,
                                 message: messageResponse.successfull,
                                 body: {
-                                    token: jwt.createToken(user)
+                                    token: jwt.createToken(user),
+                                    user: user
                                 }
                             });
                         }
@@ -129,20 +163,20 @@ exports.updateUser = (req, res) => {
     const user = req.body;
 
     User.findByIdAndUpdate(userId, user, (err, userUpdate) => {
-        if(err){
+        if (err) {
             res.status(500).send({
                 code: codeResponse.not_successfull,
                 message: messageResponse.not_successfull,
                 body: 'Error actualizando el usuario'
             });
         } else {
-            if(user){
+            if (user) {
                 res.status(200).send({
                     code: codeResponse.successfull,
                     message: messageResponse.successfull,
                     body: {
                         user: userUpdate
-                    }   
+                    }
                 });
             } else {
                 res.status(404).send({
@@ -159,7 +193,7 @@ exports.updateUser = (req, res) => {
 exports.uploadImage = (req, res) => {
     const userId = req.params.id;
 
-    if(req.files){
+    if (req.files) {
         var file_path = req.files.image.path;
         var file_split = file_path.split('\\');
         var file_name = file_split[2];
@@ -170,9 +204,9 @@ exports.uploadImage = (req, res) => {
         console.log(file_split);
         console.log(ext_split);
 
-        if(ext === 'png' || ext === 'jpg'){
-            User.findByIdAndUpdate(userId, {image: file_name}, (err, userUpdate) => {
-                if(err){
+        if (ext === 'png' || ext === 'jpg') {
+            User.findByIdAndUpdate(userId, { image: file_name }, (err, userUpdate) => {
+                if (err) {
                     console.log(err);
                     res.status(500).send({
                         code: codeResponse.not_successfull,
@@ -212,10 +246,10 @@ exports.getImageFile = (req, res) => {
 
     const imageFile = req.params.imageFile;
     console.log(imageFile);
-    const path_file = './uploads/users/'+imageFile;
+    const path_file = './uploads/users/' + imageFile;
 
     fs.stat(path_file, (err, stats) => {
-        if(err){
+        if (err) {
             console.log(err);
             res.status(404).send({
                 code: codeResponse.not_successfull,
