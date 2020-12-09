@@ -5,7 +5,6 @@ const UserController = require('../controllers/userController');
 const auth = require('../services/authenticated');
 // Me permite enviar y subir ficheros por medio del protocolo htttp
 const multipart = require('connect-multiparty');
-const user = require('../models/user');
 var userRoute = express.Router();
 
 // Middleware que me permite recibir las imagenes e indicar en que rutan se van a guardar

@@ -161,7 +161,7 @@ exports.loginUser = (req, res) => {
 exports.updateUser = (req, res) => {
     const userId = req.params.id;
     const user = req.body;
-
+    
     User.findByIdAndUpdate(userId, user, (err, userUpdate) => {
         if (err) {
             res.status(500).send({
@@ -186,7 +186,7 @@ exports.updateUser = (req, res) => {
                 });
             }
         }
-    })
+    });
 
 }
 

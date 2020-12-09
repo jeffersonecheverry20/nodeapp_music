@@ -7,6 +7,7 @@ var SongSchema = new Schema({
     number: {type: String},
     name: {type: String},
     duration: {type: String},
+    numberTimeListened: {type: Number},
     file: {type: String},
     album: {type: Schema.ObjectId, ref: 'Album'}
 });

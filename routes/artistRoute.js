@@ -11,8 +11,9 @@ var md_upload = multipart({uploadDir: './uploads/users'})
 artistRoute.route('/register-artist').post(ArtistController.saveArtist);
 artistRoute.route('/login-artist').post(ArtistController.loginUser);
 artistRoute.route('/artist/:id').get(auth.ensureAuth, ArtistController.getArtist);
+artistRoute.route('/artists').get(auth.ensureAuth, ArtistController.getAllArtist);
 artistRoute.route('/update-artist/:id').put(auth.ensureAuth, ArtistController.updateArtist);
-artistRoute.route('/upload-image/:id').post([md_upload, auth.ensureAuth], ArtistController.uploadImage);
+artistRoute.route('/upload-artist-image/:id').post([md_upload, auth.ensureAuth], ArtistController.uploadImage);
 artistRoute.route('/get-image/:imageFile').get(ArtistController.getImageFile);
 
 module.exports = artistRoute;

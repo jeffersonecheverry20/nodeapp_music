@@ -8,6 +8,8 @@ const app = express();
 // Rutas
 var userRoute = require('./routes/userRoute');
 var artistRoute = require('./routes/artistRoute');
+var alumbsRoute = require('./routes/albumRoute');
+var songRoute = require('./routes/songRoute');
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -23,5 +25,7 @@ app.set('port', config.port);
 // Ruta Base
 app.use('/api', userRoute);
 app.use('/api', artistRoute);
+app.use('/api', alumbsRoute);
+app.use('/api', songRoute);
 
 module.exports = {app};
