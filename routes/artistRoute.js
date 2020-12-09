@@ -14,6 +14,6 @@ artistRoute.route('/artist/:id').get(auth.ensureAuth, ArtistController.getArtist
 artistRoute.route('/artists').get(auth.ensureAuth, ArtistController.getAllArtist);
 artistRoute.route('/update-artist/:id').put(auth.ensureAuth, ArtistController.updateArtist);
 artistRoute.route('/upload-artist-image/:id').post([md_upload, auth.ensureAuth], ArtistController.uploadImage);
-artistRoute.route('/get-image/:imageFile').get(ArtistController.getImageFile);
+artistRoute.route('/get-artist-image/:imageFile').get(ArtistController.getImageFile);
 
 module.exports = artistRoute;
